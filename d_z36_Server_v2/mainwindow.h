@@ -9,6 +9,9 @@
 //#include <QtCore>
 #include <QtWidgets>
 
+#include "myClassChat/Chat.h"
+#include "myClassChat/mySQL_db.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -37,5 +40,13 @@ private:
     QList<QTcpSocket*> listClient;
 
     QByteArray _data; // для передачи данных между клиентом и сервером
+
+    mySQL_db dbConnect;
+    Chat dbChat;
+
+
+
+    void databaseQuery(QString requests, QTcpSocket *socket); // метод для отправления запросов в бд
+    int get_commandIndex(QString request);
 };
 #endif // MAINWINDOW_H

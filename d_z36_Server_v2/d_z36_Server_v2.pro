@@ -10,10 +10,19 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    myClassChat/Chat.cpp \
+    myClassChat/db_Table.cpp \
+    myClassChat/mySQL_db.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    myClassChat/Chat.h \
+    myClassChat/Message.h \
+    myClassChat/User.h \
+    myClassChat/db_Table.h \
+    myClassChat/iTables.h \
+    myClassChat/mySQL_db.h
 
 FORMS += \
     mainwindow.ui
@@ -22,3 +31,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32: LIBS += -L'D:/MySQL/MySQL Server 8.0/lib/' -llibmysql
+
+INCLUDEPATH += 'D:/MySQL/MySQL Server 8.0/include'
+DEPENDPATH += 'D:/MySQL/MySQL Server 8.0/include'

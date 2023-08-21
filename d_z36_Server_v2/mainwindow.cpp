@@ -12,6 +12,19 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(this->tcpServer, &QTcpServer::newConnection, this, &MainWindow::newConnection);
         ui->statusbar->showMessage("Server Start");
+
+        /*---Подключение к БД---*/
+        std::string host = "localhost";
+        std::string user = "root";
+        std::string password = "admin_password23";
+        std::string dbName = "db_chat_dz25";
+
+        this->dbConnect = mySQL_db(host, user, password, dbName);
+
+        this->dbChat = Chat(this->dbConnect);
+        this->dbChat.startChat();
+
+        if(this->dbChat.get_ChatStart()) QMessageBox::information(this, tr("DB Status"), "Connect");
     }else
     {
         QMessageBox::warning(this, tr("TCP Server Error"), this->tcpServer->errorString());
@@ -35,8 +48,9 @@ void MainWindow::readSocket()
     {
         QString str;
         in >> str;
-        ui->textBrowser->append(QString::number(socket->socketDescriptor()) + " ---> " + str);
-        this->sendMessage(socket, str);
+        //ui->textBrowser->append(QString::number(socket->socketDescriptor()) + " ---> " + str);
+        //this->sendMessage(socket, str);
+        this->databaseQuery(str, socket);
     }else
     {
         QMessageBox::warning(this, tr("DataStream"), tr("Error"));
@@ -97,4 +111,54 @@ void MainWindow::sendMessage(QTcpSocket *socket, QString str_msg)
         this->listClient[i]->write(this->_data);
     }
 }
+
+void MainWindow::databaseQuery(QString requests, QTcpSocket *socket)
+{
+    // 1 - вход; 2 - регистрация; 3 - Входящие и отправленные сообщения;
+    // 4 - Отправить сообщение; 5 - список пользователей; 0 - выход
+
+    int index = this->get_commandIndex(requests);
+
+    switch (index) {
+    case 1:
+        //Авторизация в чат(вход)
+        ui->textBrowser->append("Авторизация" + QString::number(socket->socketDescriptor()));
+        break;
+    case 2:
+        // регистрация
+        ui->textBrowser->append("регистрация " + QString::number(socket->socketDescriptor()));
+        break;
+    case 3:
+        ui->textBrowser->append("отправленыые сообщения " + QString::number(socket->socketDescriptor()));
+        break;
+    case 4:
+        ui->textBrowser->append("отправить " + QString::number(socket->socketDescriptor()));
+        break;
+    case 5:
+        ui->textBrowser->append("список пользователей " + QString::number(socket->socketDescriptor()));
+        break;
+    case 0:
+        ui->textBrowser->append("выход " + QString::number(socket->socketDescriptor()));
+        break;
+    default:
+        break;
+    }
+}
+
+int MainWindow::get_commandIndex(QString request)
+{
+    if(request.contains("log")) // вход
+        return 1;
+    if(request.contains("reg")) // регистрация
+        return 2;
+    if(request.contains("incom")) //получить сообщения
+        return 3;
+    if(request.contains("send"))//отправить сообщение
+        return 4;
+    if(request.contains("list"))// список пользователей
+        return 5;
+    if(request.contains("exit")) // выход
+        return 0;
+}
+
 
