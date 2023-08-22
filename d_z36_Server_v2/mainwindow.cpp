@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->statusbar->showMessage("Server Start");
 
         /*---Подключение к БД---*/
-        std::string host = "localhost";
+        /*std::string host = "localhost";
         std::string user = "root";
         std::string password = "admin_password23";
         std::string dbName = "db_chat_dz25";
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->dbChat = Chat(this->dbConnect);
         this->dbChat.startChat();
 
-        if(this->dbChat.get_ChatStart()) QMessageBox::information(this, tr("DB Status"), "Connect");
+        if(this->dbChat.get_ChatStart()) QMessageBox::information(this, tr("DB Status"), "Connect");*/
     }else
     {
         QMessageBox::warning(this, tr("TCP Server Error"), this->tcpServer->errorString());
